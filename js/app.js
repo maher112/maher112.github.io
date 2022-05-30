@@ -1,133 +1,101 @@
-/* -----------------------------------------------
-/* How to use? : Check the GitHub README
-/* ----------------------------------------------- */
+const filter_btns = document.querySelectorAll(".filter-btn");
+const skills_wrap = document.querySelector(".skills");
+const skills_bars = document.querySelectorAll(".skill-progress");
+const records_wrap = document.querySelector(".records");
+const records_numbers = document.querySelectorAll(".number");
+const footer_input = document.querySelector(".footer-input");
+const hamburger_menu = document.querySelector(".hamburger-menu");
+const navbar = document.querySelector("header nav");
+const links = document.querySelectorAll(".links a");
 
-/* To load a config file (particles.json) you need to host this demo (MAMP/WAMP/local)... */
-/*
-particlesJS.load('particles-js', 'particles.json', function() {
-  console.log('particles.js loaded - callback');
+footer_input.addEventListener("focus", () => {
+  footer_input.classList.add("focus");
 });
-*/
 
-/* Otherwise just put the config content (json): */
+footer_input.addEventListener("blur", () => {
+  if (footer_input.value != "") return;
+  footer_input.classList.remove("focus");
+});
 
-particlesJS('particles-js',
-  
-  {
-    "particles": {
-      "number": {
-        "value": 80,
-        "density": {
-          "enable": true,
-          "value_area": 800
-        }
-      },
-      "color": {
-        "value": "#570A57"
-      },
-      "shape": {
-        "type": "circle",
-        "stroke": {
-          "width": 0,
-          "color": "#000000"
-        },
-        "polygon": {
-          "nb_sides": 5
-        },
-        "image": {
-          "src": "img/github.svg",
-          "width": 100,
-          "height": 100
-        }
-      },
-      "opacity": {
-        "value": 0.5,
-        "random": false,
-        "anim": {
-          "enable": false,
-          "speed": 1,
-          "opacity_min": 0.1,
-          "sync": false
-        }
-      },
-      "size": {
-        "value": 5,
-        "random": true,
-        "anim": {
-          "enable": false,
-          "speed": 40,
-          "size_min": 0.1,
-          "sync": false
-        }
-      },
-      "line_linked": {
-        "enable": true,
-        "distance": 150,
-        "color": "#570A57",
-        "opacity": 0.4,
-        "width": 1
-      },
-      "move": {
-        "enable": true,
-        "speed": 6,
-        "direction": "none",
-        "random": false,
-        "straight": false,
-        "out_mode": "out",
-        "attract": {
-          "enable": false,
-          "rotateX": 600,
-          "rotateY": 1200
-        }
-      }
-    },
-    "interactivity": {
-      "detect_on": "canvas",
-      "events": {
-        "onhover": {
-          "enable": true,
-          "mode": "repulse"
-        },
-        "onclick": {
-          "enable": true,
-          "mode": "push"
-        },
-        "resize": true
-      },
-      "modes": {
-        "grab": {
-          "distance": 400,
-          "line_linked": {
-            "opacity": 1
-          }
-        },
-        "bubble": {
-          "distance": 400,
-          "size": 40,
-          "duration": 2,
-          "opacity": 8,
-          "speed": 3
-        },
-        "repulse": {
-          "distance": 200
-        },
-        "push": {
-          "particles_nb": 4
-        },
-        "remove": {
-          "particles_nb": 2
-        }
-      }
-    },
-    "retina_detect": true,
-    "config_demo": {
-      "hide_card": false,
-      "background_color": "#b61924",
-      "background_image": "",
-      "background_position": "50% 50%",
-      "background_repeat": "no-repeat",
-      "background_size": "cover"
-    }
+function closeMenu() {
+  navbar.classList.remove("open");
+  document.body.classList.remove("stop-scrolling");
+}
+
+hamburger_menu.addEventListener("click", () => {
+  if (!navbar.classList.contains("open")) {
+    navbar.classList.add("open");
+    document.body.classList.add("stop-scrolling");
+  } else {
+    closeMenu();
   }
+});
 
+links.forEach((link) => link.addEventListener("click", () => closeMenu()));
+
+filter_btns.forEach((btn) =>
+  btn.addEventListener("click", () => {
+    filter_btns.forEach((button) => button.classList.remove("active"));
+    btn.classList.add("active");
+
+    let filterValue = btn.dataset.filter;
+
+    $(".grid").isotope({ filter: filterValue });
+  })
 );
+
+$(".grid").isotope({
+  itemSelector: ".grid-item",
+  layoutMode: "fitRows",
+  transitionDuration: "0.6s",
+});
+
+window.addEventListener("scroll", () => {
+  skillsEffect();
+  countUp();
+});
+
+function checkScroll(el) {
+  let rect = el.getBoundingClientRect();
+  if (window.innerHeight >= rect.top + el.offsetHeight) return true;
+  return false;
+}
+
+function skillsEffect() {
+  if (!checkScroll(skills_wrap)) return;
+  skills_bars.forEach((skill) => (skill.style.width = skill.dataset.progress));
+}
+
+function countUp() {
+  if (!checkScroll(records_wrap)) return;
+  records_numbers.forEach((numb) => {
+    const updateCount = () => {
+      let currentNum = +numb.innerText;
+      let maxNum = +numb.dataset.num;
+      let speed = 100;
+      const increment = Math.ceil(maxNum / speed);
+
+      if (currentNum < maxNum) {
+        numb.innerText = currentNum + increment;
+        setTimeout(updateCount, 1);
+      } else {
+        numb.innerText = maxNum;
+      }
+    };
+
+    setTimeout(updateCount, 400);
+  });
+}
+
+var mySwiper = new Swiper(".swiper-container", {
+  speed: 1100,
+  slidesPerView: 1,
+  loop: true,
+  autoplay: {
+    delay: 5000,
+  },
+  navigation: {
+    prevEl: ".swiper-button-prev",
+    nextEl: ".swiper-button-next",
+  },
+});
