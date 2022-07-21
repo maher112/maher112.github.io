@@ -62,6 +62,7 @@ img {
   justify-content: center;
 }
 
+
 .text {
   font-size: 1.25rem;
   color: var(--dark-two);
@@ -980,10 +981,7 @@ header .circle {
   overflow: hidden;
 }
 
-.review {
-  position: relative;
-  padding: 2rem 1.5rem;
-}
+
 
 .quote {
   position: absolute;
